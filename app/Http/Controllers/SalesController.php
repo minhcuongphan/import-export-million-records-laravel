@@ -17,7 +17,9 @@ class SalesController extends Controller
     public function store()
     {
         if (request()->has('mycsv')) {
-            $data   =   file(request()->mycsv);
+            $uploadedFile = request()->file('mycsv');
+            //get data from the uploaded file
+            $data =  file($uploadedFile->path() . '\\csvfiles\\' . $uploadedFile->getClientOriginalName());
             // Chunking file
             $chunks = array_chunk($data, 1000);
 
@@ -25,8 +27,8 @@ class SalesController extends Controller
             $batch  = Bus::batch([])->dispatch();
 
             foreach ($chunks as $key => $chunk) {
+                //push chunk data to a new csv file
                 $data = array_map('str_getcsv', $chunk);
-
                 if ($key === 0) {
                     $header = $data[0];
                     unset($data[0]);
@@ -41,7 +43,7 @@ class SalesController extends Controller
         return 'please upload file';
     }
 
-    public function batch()
+    public function getBatch()
     {
         $batchId = request('id');
         return Bus::findBatch($batchId);
@@ -55,5 +57,5 @@ class SalesController extends Controller
         }
 
         return [];
-    }
+   }
 }
