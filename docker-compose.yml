@@ -1,0 +1,56 @@
+version: "3"
+services:
+  nginx:
+    image: nginx
+    container_name: ${DOCKER_APP}-nginx
+    volumes:
+      - ./_docker/nginx/app.conf:/etc/nginx/conf.d/default.conf
+      - ./:/var/www/html
+    ports:
+      - ${DOCKER_NGINX_PORT}:80
+    links:
+      - php:php
+  php:
+    build: _docker/php
+    container_name: ${DOCKER_APP}-php
+    expose:
+      - "9000"
+    links:
+      - mysql
+      - redis
+    volumes:
+      - ./:/var/www/html
+      - ./_docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+
+  mysql:
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: ${DOCKER_APP}-mysql
+    ports:
+      - ${DOCKER_MYSQL_PORT}:3306
+    volumes:
+      - ./_docker/data/mysql-5.7:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ${DOCKER_MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: 'secret'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'pass'
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: ${DOCKER_APP}-phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    ports:
+      - ${DOCKER_PHPMYADMIN_PORT}:80
+    external_links:
+      - mysql
+  redis:
+    image: redis
+    container_name: ${DOCKER_APP}-redis
+    volumes:
+      - ./_docker/data/redis:/data
+    command: redis-server --appendonly yes
+#networks:
+#  app-network:
+#    external: true
