@@ -19,3 +19,6 @@ Route::get('/', function () {
 });
 
 Route::resource('/upload', SalesController::class);
+
+
+Route::get('/batch', [SalesController::class, 'getBatch']);
