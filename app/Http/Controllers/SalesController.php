@@ -17,12 +17,11 @@ class SalesController extends Controller
     public function store()
     {
         if (request()->has('mycsv')) {
-            $uploadedFile = request()->file('mycsv');
             //get data from the uploaded file
-            $data =  file($uploadedFile->path() . '\\csvfiles\\' . $uploadedFile->getClientOriginalName());
-            // Chunking file
+            //$uploadedFile = request()->file('mycsv');
+            //$data =  file($uploadedFile->getPathName() . '/csvfiles/' . $uploadedFile->getClientOriginalName());
+            $data = file(request()->file('mycsv'));
             $chunks = array_chunk($data, 1000);
-
             $header = [];
             $batch  = Bus::batch([])->dispatch();
 
@@ -33,7 +32,7 @@ class SalesController extends Controller
                     $header = $data[0];
                     unset($data[0]);
                 }
-
+                
                 $batch->add(new SalesCsvProcess($data, $header));
             }
 

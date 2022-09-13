@@ -1,4 +1,4 @@
-FROM php:8.0.10-fpm
+FROM php:8-fpm
 
 RUN apt-get update && apt-get install -y \
     cron \
@@ -33,7 +33,6 @@ RUN pecl install imagick
 RUN docker-php-ext-enable imagick
 RUN docker-php-ext-install sockets
 RUN docker-php-ext-install pcntl
-RUN docker-php-ext-install exif
 RUN pecl install mongodb && docker-php-ext-enable mongodb
 
 COPY cron.txt /etc/cron.d/web
