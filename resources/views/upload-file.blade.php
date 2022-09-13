@@ -7,9 +7,12 @@
 </head>
 <body>
 <form action="/upload" method="post" enctype="multipart/form-data">
-@csrf
-<input type="file" name="mycsv" id="mycsv">
-<input type="submit" value="Upload">
-   </form>
+    @csrf
+    <input type="file" name="mycsv" id="mycsv" accept=".csv">
+    @if($errors->has('mycsv'))
+        <div class="error">{{ $errors->first('mycsv') }}</div>
+    @endif
+    <input type="submit" value="Upload">
+</form>
 </body>
 </html>

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SalesRequest;
 use App\Jobs\SalesCsvProcess;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
 
@@ -14,32 +14,28 @@ class SalesController extends Controller
         return view('upload-file');
     }
 
-    public function store()
+    public function store(SalesRequest $request)
     {
-        if (request()->has('mycsv')) {
-            //get data from the uploaded file
-            //$uploadedFile = request()->file('mycsv');
-            //$data =  file($uploadedFile->getPathName() . '/csvfiles/' . $uploadedFile->getClientOriginalName());
-            $data = file(request()->file('mycsv'));
-            $chunks = array_chunk($data, 1000);
-            $header = [];
-            $batch  = Bus::batch([])->dispatch();
+        //get data from the uploaded file
+        //$uploadedFile = request()->file('mycsv');
+        //$data =  file($uploadedFile->getPathName() . '/csvfiles/' . $uploadedFile->getClientOriginalName());
+        $data = file($request->file('mycsv'));
+        $chunks = array_chunk($data, 1000);
+        $header = [];
+        $batch  = Bus::batch([])->dispatch();
 
-            foreach ($chunks as $key => $chunk) {
-                //push chunk data to a new csv file
-                $data = array_map('str_getcsv', $chunk);
-                if ($key === 0) {
-                    $header = $data[0];
-                    unset($data[0]);
-                }
-                
-                $batch->add(new SalesCsvProcess($data, $header));
+        foreach ($chunks as $key => $chunk) {
+            //push chunk data to a new csv file
+            $data = array_map('str_getcsv', $chunk);
+            if ($key === 0) {
+                $header = $data[0];
+                unset($data[0]);
             }
-
-            return $batch;
+            
+            $batch->add(new SalesCsvProcess($data, $header));
         }
 
-        return 'please upload file';
+        return $batch;
     }
 
     public function getBatch()
