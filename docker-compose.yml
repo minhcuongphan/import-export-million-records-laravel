@@ -15,9 +15,6 @@ services:
     container_name: ${DOCKER_APP}-php
     expose:
       - "9000"
-#    environment:
-#      XDEBUG_CONFIG: remote_host=${DOCKER_MY_IP}  remote_port=${DOCKER_XDEBUG_PORT}
-#      PHP_IDE_CONFIG: "serverName=${DOCKER_XDEBUG_SERVER}"
     links:
       - mysql
       - redis
