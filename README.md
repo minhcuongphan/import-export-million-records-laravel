@@ -6,6 +6,8 @@ which can help them to upload a csv file with millions of records.
 Please follow the guide that I wrote below to set the project up.
 Don't hesitate to ping me if you face any difficulty while installing the project.
 
+link to download large csv files: https://excelbianalytics.com/wp/downloads-18-sample-csv-files-data-sets-for-testing-sales/
+
 ```
 
 ## Docker setup
