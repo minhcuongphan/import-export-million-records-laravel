@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SalesRequest;
 use App\Jobs\SalesCsvProcess;
+use App\Models\Sales;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
 
@@ -11,7 +12,8 @@ class SalesController extends Controller
 {
     public function index()
     {
-        return view('upload-file');
+        $sales = Sales::paginate(20);
+        return view('sales.index', compact('sales'));
     }
 
     public function store(SalesRequest $request)
@@ -35,7 +37,7 @@ class SalesController extends Controller
             $batch->add(new SalesCsvProcess($data, $header));
         }
 
-        return $batch;
+        return response()->json(['success'   => true]);
     }
 
     public function getBatch()
