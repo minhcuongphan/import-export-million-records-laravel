@@ -32,7 +32,7 @@
             <option value="Andhra Pradesh">Andhra Pradesh</option>
           </select>
           <button class="btn btn-success h-100" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">import sales data</button>
-          <button class="btn btn-success h-100 ms-3">export sales data</button>
+          <button class="btn btn-success h-100 ms-3" data-bs-toggle="modal" data-bs-target="#exampleModal2">export sales data</button>
         </div>
 
         <div class="og-row og-li og-li-head">
@@ -74,7 +74,6 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              {{-- <form action="/sales" method="post" enctype="multipart/form-data"> --}}
                 <form>
                     @csrf
                     <div class="mb-3">
@@ -94,6 +93,29 @@
           </div>
         </div>
       </div>
+
+
+      <!-- Modal 2 -->
+    <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Export Sales Data</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('download.csv') }}" method="GET">
+                @csrf
+                <div class="modal-body">
+                    Are you sure to export all data to a csv file?
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            </div>
+        </div>
+        </div>
+    </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
@@ -120,9 +142,7 @@
             cache : false,
             processData: false,
             contentType: false,
-            success:function(data) {
-                if ()
-            }
+            success:function(data) {}
         });
     }
 </script>

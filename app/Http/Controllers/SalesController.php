@@ -7,6 +7,8 @@ use App\Jobs\SalesCsvProcess;
 use App\Models\Sales;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
+use Rap2hpoutre\FastExcel\Facades\FastExcel;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class SalesController extends Controller
 {
@@ -55,4 +57,61 @@ class SalesController extends Controller
 
         return [];
    }
+
+    public function download()
+    {
+        $this->exportByFastExcel();    
+    }
+
+    private function salesGenerator($sales)
+    {
+        foreach ($sales as $sale) {
+            yield $sale;
+        }
+    }
+
+    private function exportByFastExcel()
+    {
+        return FastExcel::data($this->salesGenerator(Sales::cursor()))->download('salesCsvFile.csv', function ($sale) {
+            return [
+                'ID'            => $sale->id,
+                'Region'        => $sale->Region,
+                'Country'       => $sale->Country,
+            ];
+        });
+    }
+
+    private function exportbByStreamedResponse()
+    {
+        $response = new StreamedResponse(function () {
+            // Open output stream
+            $handle = fopen('php://output', 'w');
+
+            // Add CSV headers
+            fputcsv($handle, [
+                'ID',
+                'Region', 
+                'Country'
+            ]);
+            
+            Sales::chunk(500000, function($sales) use($handle) {
+                foreach ($this->salesGenerator($sales) as $sale) {
+                    // Add a new row with data
+                    fputcsv($handle, [
+                      $sale->id,
+                      $sale->Region,
+                      $sale->Country
+                    ]);
+                }
+            });
+
+            // Close the output stream
+            fclose($handle);
+        }, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="salesCsvFile.csv"',
+        ]);
+
+        return $response;
+    }
 }

@@ -18,6 +18,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/download-csv', [SalesController::class, 'download'])->name('download.csv');
+
 Route::resource('/sales', SalesController::class);
 
 
