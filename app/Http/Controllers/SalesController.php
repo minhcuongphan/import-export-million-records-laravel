@@ -114,38 +114,4 @@ class SalesController extends Controller
 
         return $response;
     }
-
-    private function exportbByStreamedResponsetTest()
-    {
-        $response = new StreamedResponse(function () {
-            // Open output stream
-            $handle = fopen('php://output', 'w');
-
-            // Add CSV headers
-            fputcsv($handle, [
-                'ID',
-                'Region', 
-                'Country'
-            ]);
-            
-            Sales::chunk(500000, function($sales) use($handle) {
-                foreach ($this->salesGenerator($sales) as $sale) {
-                    // Add a new row with data
-                    fputcsv($handle, [
-                      $sale->id,
-                      $sale->Region,
-                      $sale->Country
-                    ]);
-                }
-            });
-
-            // Close the output stream
-            fclose($handle);
-        }, 200, [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="salesCsvFile.csv"',
-        ]);
-
-        return $response;
-    }
 }
