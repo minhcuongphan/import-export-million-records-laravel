@@ -11,6 +11,7 @@
         "laravel/horizon": "^5.10",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
+        "phpmd/phpmd": "^2.13",
         "predis/predis": "^2.0",
         "rap2hpoutre/fast-excel": "^4.1",
         "sebastian/phpcpd": "^6.0"
